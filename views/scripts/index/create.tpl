@@ -52,8 +52,8 @@ echo $this->form->render($this);
 
 	const maxCnt = 5;
 	let cnt = 1;
-	var priceArray = [];
-	var quantityArray = [];
+	let  priceArray = [];
+	let quantityArray = [];
 
 
 	/*

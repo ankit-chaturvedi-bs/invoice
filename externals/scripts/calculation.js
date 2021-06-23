@@ -25,7 +25,7 @@ function getDiscountPrice(){
 
 
 function changeAmount(){
-
+	console.log(cnt);
 	for(let i=1;i<=cnt-1;i++){
 		const id = 'a'+i;
 		$(id).value = (quantityArray[i]*priceArray[i])

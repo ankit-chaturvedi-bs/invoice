@@ -64,7 +64,7 @@ class Invoice_Form_Create extends Engine_Form
         //     'autofocus' => 'autofocus',
         // ));
 
-        $this->addElement('Text', 'to', array(
+        $this->addElement('Text', 'customer_name', array(
             'label' => 'Name (Bill To)',
             'allowEmpty' => false,
             'required' => true,
@@ -72,13 +72,13 @@ class Invoice_Form_Create extends Engine_Form
             'autofocus' => 'autofocus',
         ));
 
-        $this->addElement('Date', 'date', array(
-            'label' => 'Invoice Date',
-            'allowEmpty' => false,
-            'required' => true,
-            'maxlength' => '63',
-            'autofocus' => 'autofocus',
-        ));
+        // $this->addElement('Date', 'date', array(
+        //     'label' => 'Invoice Date',
+        //     'allowEmpty' => false,
+        //     'required' => true,
+        //     'maxlength' => '63',
+        //     'autofocus' => 'autofocus',
+        // ));
 
 
         $this->addElement('Text', 'address', array(

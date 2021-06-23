@@ -1,7 +1,7 @@
 <?php 
 
 
-class Invoice_Model_DbTable_Categories extends Engine_Db_Table
+class Invoice_Model_DbTable_Categories extends Core_Model_Item_DbTable_Abstract
 {
   protected $_rowClass = 'Invoice_Model_Category';
 
@@ -9,8 +9,8 @@ class Invoice_Model_DbTable_Categories extends Engine_Db_Table
   public function getCategoriesAssoc()
   {
     $stmt = $this->select()
-        ->from($this, array('category_id', 'category_name'))
-        ->query();
+    ->from($this, array('category_id', 'category_name'))
+    ->query();
     $data = array();
     foreach( $stmt->fetchAll() as $category ) {
       $data[$category['category_id']] = $category['category_name'];

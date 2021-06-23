@@ -45,11 +45,24 @@
       'defaults' => array(
         'module' => 'invoice',
         'controller' => 'index',
-        'action' => 'create',
+        'action' => 'manage',
       ),
       'reqs' => array(
-        'action' => '(delete|create)',
+        'action' => '(create|manage)',
       ),
+    ),
+
+    'invoice_specific' => array(
+      'route' => 'invoice/:action/:invoice_id',
+      'defaults' => array(
+        'module' => 'invoice',
+        'controller' => 'index',
+        'action' => 'edit',
+      ),
+      'reqs' => array(
+        'action' => '(edit|delete)',
+      ),
+
     ),
   ),
 ); ?>
