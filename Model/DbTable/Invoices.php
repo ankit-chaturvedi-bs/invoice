@@ -108,6 +108,12 @@ public function getInvoiceNumber($category,$name,$curr = 0){
 
 
     $table = Engine_Api::_()->getDbtable('invoices', 'invoice');
+    $rName = $table->info('name');
+
+    if($params['all'])
+        return $table->select()->order(!empty($params['orderby'])
+            ? $rName.'.'.$params['orderby'].' DESC': $rName.'invoice_id DESC');
+
 
     $select = $table->select()
     ->where("creator_id = ?",$viewerId);
@@ -118,15 +124,41 @@ public function getInvoiceNumber($category,$name,$curr = 0){
 
 
 
+    public function getFilteredSelect($search){
+
+        $condition = "";
+        foreach($search as $key => $value){
+            $condition .= $key." LIKE "."'%".$value."%'"." ";
+        }
+
+        $select = $this->select()->
+                    where($condition);
+
+        // echo $select;
+        // die;
+        return $select;
+    }
+
+
   /**
      * Gets a paginator for blogs
      *
-     * @param Core_Model_Item_Abstract $user The user to get the messages for
+     * @param Core_Model_Item_Abstract $user The user to get the messages for|select all invoices
      * @return Zend_Paginator
      */
-  public function getInvoicesPaginator($params = array())
+  public function getInvoicesPaginator($params = array(),$search = array())
   {
-    $paginator = Zend_Paginator::factory($this->getInvoicesSelect($params));
+
+    $select;
+
+    if(empty($search)){
+        $select = $this->getInvoicesSelect($params);
+    }else{
+        $select = $this->getFilteredSelect($search);
+    }
+
+
+    $paginator = Zend_Paginator::factory($select);
     if (!empty($params['page'])) {
         $paginator->setCurrentPageNumber($params['page']);
     }

@@ -67,9 +67,17 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     $db->beginTransaction();
 
     try{
+
+      /**
+       * @var type is 1 or 2 
+       * 1 means paid and 2 means unpaid
+       * 
+       */
+
       $values = array_merge($formValues, array(
         'creator_name' => $viewer->getTitle(),
         'creator_id' => $viewer->getIdentity(),
+        'type' => 2
       ));
 
 
@@ -96,7 +104,11 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       $values['igst'] = $igst;
       $values['sgst'] = $sgst;
 
-      // print_r($values);
+      $values['total'] = $this->calcTotal($products,$values);
+
+
+
+      // var_dump($values);
       // die;
 
       $invoice = $table->createRow();
@@ -248,6 +260,9 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
     try{
       $finalValues = $this->getEditableValues($formValues);
+      $finalValues['total'] = $this->calcTotal($products,$formValues);
+
+     
       // $this->debugErrors($finalValues);
       $invoice->setFromArray($finalValues);
       $invoice->save();
@@ -318,8 +333,75 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       'parentRedirect' => Zend_Controller_Front::getInstance()->getRouter()->assemble(array('action' => 'manage'), 'invoice_general', true),
       'messages' => Array($this->view->message)
     ));
+  }
 
 
+  public function viewAction(){
+        if (!$this->_helper->requireUser()->isValid()) return;
+
+
+    $viewer = Engine_Api::_()->user()->getViewer();
+    $invoice_id = $this->_getParam('invoice_id');
+
+    // $invoiceValues = Engine_Api::_()->getDbtable('invoices','invoice')->getInvoice($invoice_id,$viewer->getIdentity());
+
+    $invoice = Engine_Api::_()->getItem('invoice', $this->_getParam('invoice_id'));
+
+
+    $invoiceValues = $invoice->toArray();
+
+    //create a route;
+    if(empty($invoiceValues)) return $this->_helper->redirector->gotoRoute(array('action' => 'manage'));
+
+    // $this->debugErrors($invoiceValues);
+
+    $products = Engine_Api::_()->getDbtable('products','invoice')->getProducts($invoiceValues['invoice_number']);
+
+
+    $this->view->invoice = $invoiceValues;
+    $this->view->products = $products;
+
+  }
+
+
+
+  private function calcTax($tax,$amount){
+    reutrn ($amount*$tax)/100;
+  } 
+
+
+  private function calcTotal($products,$formValues){
+    $quantity = $products['quantitys'];
+    $price = $products['amounts'];
+
+    $cnt = count($quantity);
+    $total = 0;
+
+    for($i =0;$i<=$cnt;$i++){
+      $total += ((int)$quantity[$i]) * ((int)$price[$i]);
+    }
+
+    $curr = $formValues['currency'];
+    $tax = 0;
+    if($curr){
+      $state = $formValues['state'];
+
+      if($state){
+           $igstTax = calcTax($formValues['igst'],$total);
+           $cgstTax = calcTax($formValues['cgst'],$total);
+            $tax = $igstTax+$cgstTax;
+      }else{
+        $sgstTax = calcTax($formValues['sgst'],$total);
+        $tax = $sgstTax;
+      }
+    }
+    $total += $tax + (int)$formValues['discount'];
+
+
+    // echo $total;
+    // die;
+
+    return $total;
 
   }
 

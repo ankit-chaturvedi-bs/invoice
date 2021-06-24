@@ -163,7 +163,8 @@ class Invoice_Form_Create extends Engine_Form
             'required' => true,
             'maxlength' => '63',
             'placeholder' => '0.00',
-            'onchange' => 'discountChange(this)'
+            'onchange' => 'discountChange(this)',
+            'value' => 0
         ));
 
 

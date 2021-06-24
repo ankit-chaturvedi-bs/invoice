@@ -60,7 +60,7 @@
         'action' => 'edit',
       ),
       'reqs' => array(
-        'action' => '(edit|delete)',
+        'action' => '(edit|delete|view)',
       ),
 
     ),

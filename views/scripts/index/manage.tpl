@@ -60,6 +60,7 @@ if ($paginator->getTotalItemCount() > 0) :
                 <th>Date</th>
                 <th>Invoice</th>
                 <th>Recipient</th>
+                <th>Type</th>
                 <th>Creator</th>
                 <th>Action</th>
                 <th>Amount</th>
@@ -75,10 +76,17 @@ if ($paginator->getTotalItemCount() > 0) :
         <tbody>
 
             <?php foreach ($paginator as $item) : ?>
+
+                <?php
+                $type = "unpaid";
+                if($item['type'] == 1) $type = "paid";
+                ?>
+
                 <tr class="item-row">
                     <td><?=$item['creation_date']?></td>
                     <td><?=$item['invoice_number']?></td>
                     <td><?=$item['customer_name']?></td>
+                    <td><?=$type?></td>
                     <td><?=$item['creator_name']?></td>
                     <td>
                         <span>
@@ -110,7 +118,7 @@ if ($paginator->getTotalItemCount() > 0) :
 
                         <span>
                             <?php echo $this->htmlLink(array(
-                                'action'=>'edit',
+                                'action'=>'view',
                                 'invoice_id'=> $item->getIdentity(),
                                 'route'=> 'invoice_specific',
                                 'reset'=> true,
