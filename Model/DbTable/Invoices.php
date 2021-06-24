@@ -12,7 +12,7 @@ class Invoice_Model_DbTable_Invoices extends Core_Model_Item_DbTable_Abstract
 
 }
 
-private function getNumber($param,$name,$currYear){
+private function getNumber($param,$name,$currYear,$currMonth,$resetMonth){
     // invoice starting number
     $inNo = (int)$param[0]; 
     // invoice category name
@@ -91,7 +91,7 @@ public function getInvoiceNumber($category,$name,$curr = 0){
     // die;
     $values = explode("/",$value['invoice_number']);
     
-    return $this->getNumber($values,$name,$currYear);
+    return $this->getNumber($values,$name,$currYear,$currMonth,$resetMonth);
     
 }
 
@@ -166,5 +166,3 @@ public function getInvoiceNumber($category,$name,$curr = 0){
 
 
 }
-
-?>

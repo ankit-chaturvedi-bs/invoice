@@ -7,7 +7,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     $this->view->someVar = 'someVal';
   }
 
- 
+
 
   
   public function createAction(){
@@ -21,12 +21,12 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
 
     if( !$this->getRequest()->isPost() ) {
-            return;
+      return;
     }
 
 
     if( !$form->isValid($this->getRequest()->getPost()) ) {
-            return;
+      return;
     }
 
 
@@ -68,11 +68,11 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
     try{
       $values = array_merge($formValues, array(
-                'creator_name' => $viewer->getTitle(),
-                'creator_id' => $viewer->getIdentity(),
+        'creator_name' => $viewer->getTitle(),
+        'creator_id' => $viewer->getIdentity(),
       ));
 
-     
+
       // get the category name 
       $category_name = Engine_Api::_()->getDbtable('categories','invoice')->getCategory($values['category_id']);
 
@@ -82,8 +82,8 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
       
       $values = array_merge($values,array(
-              'invoice_number' => $invoice_number,
-              'customer_email' => $values['email']
+        'invoice_number' => $invoice_number,
+        'customer_email' => $values['email']
       ));
 
 
@@ -149,7 +149,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
 
     } catch( Exception $e ) {
-            return $this->exceptionWrapper($e, $form, $db);
+      return $this->exceptionWrapper($e, $form, $db);
     }
 
     return $this->_helper->redirector->gotoRoute(array('action' => 'create'));
@@ -168,8 +168,8 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     $items_per_page = (int) Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.page',10);
 
     $values = array(
-            'page' => $page_number,
-            'limit' => $item_per_page
+      'page' => $page_number,
+      'limit' => $item_per_page
     );
 
 
@@ -217,12 +217,12 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     // $this->debugErrors($this->getRequest()->getPost());
 
     if( !$this->getRequest()->isPost() ) {
-            return;
+      return;
     }
 
 
     if( !$form->isValid($this->getRequest()->getPost()) ) {
-            return;
+      return;
     }
 
 
@@ -263,51 +263,117 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       return $this->exceptionWrapper($e, $form, $db);
     }
 
-      return $this->_helper->redirector->gotoRoute(array('action' => 'manage'));
+    return $this->_helper->redirector->gotoRoute(array('action' => 'manage'), 'invoice_general', true);
 
   }
 
 
+
+  public function deleteAction(){
+    if (!$this->_helper->requireUser()->isValid()) return;
+    $viewer = Engine_Api::_()->user()->getViewer();
+    $invoice_id = $this->_getParam('invoice_id');
+
+    $invoice = Engine_Api::_()->getItem('invoice', $this->_getParam('invoice_id'));
+    $invoiceValue = $invoice->toArray();
+    $this->_helper->layout->setLayout('default-simple');
+
+    $this->view->form = $form = new Invoice_Form_Delete();
+
+
+    if( !$this->getRequest()->isPost() ) {
+      $this->view->status = false;
+      $this->view->error = Zend_Registry::get('Zend_Translate')->_('Invalid request method');
+      return;
+    }
+
+    $invoice_number = $invoiceValue['invoice_number'];
+
+    $db = $invoice->getTable()->getAdapter();
+    $db->beginTransaction();
+
+    try{
+
+      $streamTable = Engine_Api::_()->getDbtable('products', 'invoice');
+
+
+      // first delete all products,then delete invoice
+      $streamTable->delete(array(
+        'invoice_number = ?' => $invoice_number,
+      ));
+
+      $invoice->delete();
+      $db->commit();
+
+
+
+    }catch( Exception $e ) {
+      $db->rollBack();
+      throw $e;
+    }
+
+    $this->view->status = true;
+    $this->view->message = "Invoice has been deleted";
+    return $this->_forward('success' ,'utility', 'core', array(
+      'parentRedirect' => Zend_Controller_Front::getInstance()->getRouter()->assemble(array('action' => 'manage'), 'invoice_general', true),
+      'messages' => Array($this->view->message)
+    ));
+
+
+
+  }
+
+
+  /**
+   * @param products to insert | invoice number for products
+   * @return success or give error
+   * 
+   */
 
   private function productsInsertion($products,$invoice_number){
       // products table insertion begin here
 
-      $productTable = Engine_Api::_()->getDbtable('products','invoice');
-      $prodDb = $productTable->getAdapter();
-      
-      $prodDb->beginTransaction();
+    $productTable = Engine_Api::_()->getDbtable('products','invoice');
+    $prodDb = $productTable->getAdapter();
+
+    $prodDb->beginTransaction();
 
       // products name array
-      $names = $products['names'];
+    $names = $products['names'];
       // products quantity array  
-      $qtys = $products['quantitys'];
+    $qtys = $products['quantitys'];
       // products amounts array 
-      $amounts = $products['amounts']; 
+    $amounts = $products['amounts']; 
 
       // total added product count;
-      $cnt = count($amounts);
+    $cnt = count($amounts);
 
 
-      for($i = 1; $i<=$cnt;$i++){
-        $productArray = array();
+    for($i = 1; $i<=$cnt;$i++){
+      $productArray = array();
 
-        $productArray['product_name'] = $names[$i];
-        $productArray['quantity'] = $qtys[$i];
-        $productArray['price'] = $amounts[$i];
-        $productArray['invoice_number'] = $invoice_number;
-        $productArray['product_id'] = null;
-        $product = $productTable->createRow();
-        
-        $product->setFromArray($productArray);
-        $product->save();
-      }
-      $prodDb->commit();
+      $productArray['product_name'] = $names[$i];
+      $productArray['quantity'] = $qtys[$i];
+      $productArray['price'] = $amounts[$i];
+      $productArray['invoice_number'] = $invoice_number;
+      $productArray['product_id'] = null;
+      $product = $productTable->createRow();
+
+      $product->setFromArray($productArray);
+      $product->save();
+    }
+    $prodDb->commit();
   }
 
+  /**
+   * @param products to insert | invoice number of produts 
+   * 
+   */
   private function updateProductDb($products,$invoice_number){
-    // print_r($products);
-    // die;
     $streamTable = Engine_Api::_()->getDbtable('products', 'invoice');
+    
+
+    // first delete all products,then insert
     $streamTable->delete(array(
       'invoice_number = ?' => $invoice_number,
     ));
@@ -325,7 +391,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
    */
   private function getEditableValues($param){
     return array(
-      'to' => $param['to'],
+      'customer_name' => $param['customer_name'],
       'address'=>$param['address'],
       'contact_number' => $param['contact_number'],
       'customer_email' => $param['email'],
