@@ -1,3 +1,13 @@
+<script type="text/javascript">
+  var fetchLevelSettings =function(level_id){
+    window.location.href= en4.core.baseUrl+'admin/invoice/level/index/id/'+level_id;
+    //alert(level_id);
+  }
+</script>
+
+
+
+
 <?php if( count($this->navigation) ): ?>
 <div class='tabs'>
     <?php

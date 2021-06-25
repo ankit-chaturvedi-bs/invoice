@@ -172,6 +172,7 @@ echo $this->form->render($this);
 			toggleGstFields("none")
 
 
+		document.getElementById('type').setAttribute('disabled',"disabled");
 
 
 	</script>

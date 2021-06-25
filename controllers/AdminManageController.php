@@ -94,7 +94,7 @@ class Invoice_AdminManageController extends Core_Controller_Action_Admin
 	private function getSearchParam($param){
 
 		$arr = array();
-		$keys = array("invoice_number","invoice_id","type"
+		$keys = array("invoice_number","category_id","type"
 		);
 
 		foreach($param as $key => $value){

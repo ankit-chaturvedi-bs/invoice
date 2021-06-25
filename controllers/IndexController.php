@@ -20,6 +20,23 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     $this->view->igst = $igst = Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.igst', 8);
 
 
+
+    $viewer = Engine_Api::_()->user()->getViewer();
+
+    $creatorsId = array(1,2,3,6);
+
+    $canCreate = Engine_Api::_()->getDbtable('permissions', 'authorization')->getAllowed('invoice', $this->view->viewer()->level_id, 'create');
+
+    if(!$canCreate){
+
+    return $this->_helper->redirector->gotoRoute(array('action' => 'manage'), 'invoice_general', true);
+
+
+    }
+
+  
+    
+
     if( !$this->getRequest()->isPost() ) {
       return;
     }
@@ -30,9 +47,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     }
 
 
-    // will give the object of viewer who is creating form
-    $viewer = Engine_Api::_()->user()->getViewer();
-    
+
       // * check for date
       // * check for products 
       // * email and mobile no regex check
@@ -209,6 +224,9 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
     $invoiceValues = $invoice->toArray();
 
+    if($invoiceValues['type'] == 1) return $this->_helper->redirector->gotoRoute(array('action' => 'manage'), 'invoice_general', true);
+
+
     //create a route;
     if(empty($invoiceValues)) return $this->_helper->redirector->gotoRoute(array('action' => 'manage'));
 
@@ -366,7 +384,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
 
   private function calcTax($tax,$amount){
-    reutrn ($amount*$tax)/100;
+    return ($amount*$tax)/100;
   } 
 
 
@@ -387,11 +405,11 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       $state = $formValues['state'];
 
       if($state){
-           $igstTax = calcTax($formValues['igst'],$total);
-           $cgstTax = calcTax($formValues['cgst'],$total);
+           $igstTax = $this->calcTax($formValues['igst'],$total);
+           $cgstTax = $this->calcTax($formValues['cgst'],$total);
             $tax = $igstTax+$cgstTax;
       }else{
-        $sgstTax = calcTax($formValues['sgst'],$total);
+        $sgstTax = $this->calcTax($formValues['sgst'],$total);
         $tax = $sgstTax;
       }
     }
@@ -480,6 +498,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       'discount' => $param['discount'],
       'currency' => $param['currency'],
       'state' => $param['state'],
+      'type' => $param['type'],
     );
   }
 

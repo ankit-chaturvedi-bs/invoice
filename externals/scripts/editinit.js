@@ -42,8 +42,6 @@ function populateInput(value,id){
  */
 
 function populateFields(productsArr){
-	console.log(productsArr);
-
 	let populateName = (value,id) => {
 		const elemId = `p${id}`;
 		populateInput(value,elemId);
@@ -82,21 +80,13 @@ function populateFields(productsArr){
 		populateAmount((+price)*(+quantity),i+1);
 	}
 
-	console.log('price array');
-	console.log(priceArray);
-	console.log('product array');
-	console.log(quantityArray);
-
 }
 
 
 
 
 
-/** 
- * @param products array
- * 
- */
+
 function addInitialProducts(productsArr){
 
 	/**
@@ -117,4 +107,19 @@ function addInitialProducts(productsArr){
 
 	populateFields(productsArr);
 
+
 }
+	
+
+
+function changeSubtotal(priceArr,quantityArr){
+	let total = 0;
+	for(let i=0;i<=5;i++){
+		total += (priceArr[i])*(quantityArr[i]);
+	}
+
+	$('sub_total').value = total;
+}
+
+
+

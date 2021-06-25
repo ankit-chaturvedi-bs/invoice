@@ -35,6 +35,10 @@ class Invoice_Form_Create extends Engine_Form
         $this->_parent_id = $value;
     }
 
+
+
+
+
     public function init()
     {
         $this->setTitle('Create A New Invoice')
@@ -122,6 +126,13 @@ class Invoice_Form_Create extends Engine_Form
             'multiOptions' => array("0" => "Haryana", "1" => "Outside Haryana"),
             'value' => 0,
             'onchange' => 'stateChange(this)'
+        ));
+
+
+        $this->addElement('Select','type',array(
+            'label' => 'Type',
+            'multiOptions' => array("1"=>"paid","2"=>"unpaid"),
+            'value' => 2,
         ));
 
         $categories = Engine_Api::_()->getDbtable('categories', 'invoice')->getCategoriesAssoc();

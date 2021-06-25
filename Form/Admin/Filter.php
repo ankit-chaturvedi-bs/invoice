@@ -21,13 +21,16 @@ class Invoice_Form_Admin_Filter extends Engine_Form {
       ),
     ));
 
-    $this->addElement('Text', 'invoice_id', array(
+    $categories = Engine_Api::_()->getDbtable('categories', 'invoice')->getCategoriesAssoc();
+    $categories = array_merge(array(0=>""),$categories);
+    $this->addElement('Select', 'category_id', array(
       'label' => 'Invoice Id',
       'decorators' => array(
           'ViewHelper',
           array('Label', array('tag' => null, 'placement' => 'PREPEND')),
           array('HtmlTag', array('tag' => 'div'))
       ),
+      'multiOptions' => $categories,
     ));
 
     $this->addElement('Select', 'type', array(

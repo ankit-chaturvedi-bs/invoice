@@ -217,6 +217,14 @@
 	 addInitialProducts(productsArr);
 
 
+	 /**
+	  * @path externals/editinit.js
+	  * @do add the subtotal
+	  * 
+	  */
+	  changeSubtotal(priceArray,quantityArray);
+
+
 
 	</script>
 

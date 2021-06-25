@@ -124,7 +124,7 @@ if ($paginator->getTotalItemCount() > 0) :
                                 'reset'=> true,
                             ),'view'); ?>
                         </span>
-                        <td>random total</td>
+                        <td><?=$item['total'];?></td>
                     </tr>
                 <?php endforeach; ?>
 

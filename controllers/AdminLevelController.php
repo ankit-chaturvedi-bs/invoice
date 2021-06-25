@@ -30,7 +30,7 @@ class Invoice_AdminLevelController extends Core_Controller_Action_Admin{
 
     // Populate values
     $permissionsTable = Engine_Api::_()->getDbtable('permissions', 'authorization');
-    $form->populate($permissionsTable->getAllowed('blog', $id, array_keys($form->getValues())));
+    $form->populate($permissionsTable->getAllowed('invoice', $id, array_keys($form->getValues())));
 
     // Check post
     if( !$this->getRequest()->isPost() ) {
@@ -55,7 +55,7 @@ class Invoice_AdminLevelController extends Core_Controller_Action_Admin{
     try
     {
       // Set permissions
-      $permissionsTable->setAllowed('blog', $id, $values, '', $nonBooleanSettings);
+      $permissionsTable->setAllowed('invoice', $id, $values, '', $nonBooleanSettings);
 
       // Commit
       $db->commit();
