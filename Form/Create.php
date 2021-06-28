@@ -276,10 +276,14 @@ class Invoice_Form_Create extends Engine_Form
     public function getProducts($param = array()){
         if(!isset($param)) return;
 
-        $cnt = (int)$param['products'];
+
+        // print_r($param);
+        // die;
+        
         $names = array();
         $qtys =array();
         $amounts =array();
+        $cnt = (int)$param['products'];
 
         for($i = 1; $i <= $cnt;$i++) {
             $id = "p".$i;
@@ -295,6 +299,13 @@ class Invoice_Form_Create extends Engine_Form
             $id = "pr".$i;
             $amounts[$i] = $param[$id];
         }
+
+        // print_r(array(
+        //     'names' => $names,
+        //     'quantitys' => $qtys,
+        //     'amounts' => $amounts,
+        // ));
+        // die;
 
         return array(
             'names' => $names,

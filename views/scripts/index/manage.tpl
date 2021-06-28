@@ -46,9 +46,10 @@ $paginator = $this->paginator;
 
 
 
+
+
 if ($paginator->getTotalItemCount() > 0) :
     ?>
-
 
 
 
@@ -64,6 +65,7 @@ if ($paginator->getTotalItemCount() > 0) :
                 <th>Creator</th>
                 <th>Action</th>
                 <th>Amount</th>
+                <th>Currency</th>
 
             </tr>
 
@@ -111,34 +113,42 @@ if ($paginator->getTotalItemCount() > 0) :
                                 ),
                                 "delete",array(
                                     'class'=>'buttonlink smoothbox'));
-                            ?>
-                        </span>
+                                    ?>
+                                </span>
 
-                        |
+                                |
 
-                        <span>
-                            <?php echo $this->htmlLink(array(
-                                'action'=>'view',
-                                'invoice_id'=> $item->getIdentity(),
-                                'route'=> 'invoice_specific',
-                                'reset'=> true,
-                            ),'view'); ?>
-                        </span>
-                        <td><?=$item['total'];?></td>
-                    </tr>
-                <?php endforeach; ?>
-
-
-
-            </tbody>
-
-        </table>
+                                <span>
+                                    <?php echo $this->htmlLink(array(
+                                        'action'=>'view',
+                                        'invoice_id'=> $item->getIdentity(),
+                                        'route'=> 'invoice_specific',
+                                        'reset'=> true,
+                                    ),'view'); ?>
+                                </span>
+                                <td><?=$item['total'];?></td>
+                                <td><?php echo ($item['currency'])?"Dollar":"Rupees"?>
+                            </tr>
+                        <?php endforeach; ?>
 
 
-    <?php endif; ?>
 
-    <?php echo $this->paginationControl($this->paginator, null, null, array(
-        'pageAsQuery' => true,
-        'query' => $this->formValues,
+                    </tbody>
+
+                </table>
+
+            <?php else: ?>
+                <div>
+                    <img src="<?=$this->layout()->staticBaseUrl?>application/modules/Invoice/externals/images/no_data.png" >
+                </div>
+
+            </div>
+
+
+        <?php endif; ?>
+
+        <?php echo $this->paginationControl($this->paginator, null, null, array(
+            'pageAsQuery' => true,
+            'query' => $this->formValues,
     //'params' => $this->formValues,
-        )); ?>
+            )); ?>

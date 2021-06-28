@@ -39,14 +39,22 @@ $paginator = $this->paginator;
 
 ?>
 
+<style type="text/css">
+    .search{
+        margin-bottom: 6px;
+    }
 
-<div class="admin_form">
+</style>
+
+ <div class="admin_form" >
 
     <?php echo $this->form->render($this) ?>
 
 
-</div>
+</div> 
 
+
+<div >
 <?php if( count($this->paginator) ): ?>
     <form id='multidelete_form' method="post" action="<?php echo $this->url();?>" onSubmit="return multiDelete()">
         <table class='admin_table'>
@@ -131,6 +139,14 @@ $paginator = $this->paginator;
       <button type='submit'><?php echo $this->translate("Delete Selected") ?></button>
   </div>
 </form>
+
+
+<?php else: ?>
+    <div>
+        <img src="<?=$this->layout()->staticBaseUrl?>application/modules/Invoice/externals/images/no_data.png" >
+    </div>
+
+</div>
 
 <?php endif; ?>
 

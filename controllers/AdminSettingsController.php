@@ -16,6 +16,9 @@ class Invoice_AdminSettingsController extends Core_Controller_Action_Admin{
       if($this->getRequest()->isPost() && $form->isValid($this->_getAllParams())){
       	$values = $form->getValues();
 
+        // print_r($values);
+        // die;
+
       	foreach ($values as $key => $value){
         Engine_Api::_()->getApi('settings', 'core')->setSetting($key, $value);
       }

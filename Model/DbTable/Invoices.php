@@ -124,20 +124,20 @@ public function getInvoiceNumber($category,$name,$curr = 0){
 
 
 
-    public function getFilteredSelect($search){
+public function getFilteredSelect($search){
 
-        $condition = "";
-        foreach($search as $key => $value){
-            $condition .= $key." LIKE "."'%".$value."%'"." ";
-        }
+    $condition = "";
+    foreach($search as $key => $value){
+        $condition .= $key." LIKE "."'%".$value."%'"." ";
+    }
 
-        $select = $this->select()->
-                    where($condition);
+    $select = $this->select()->
+    where($condition);
 
         // echo $select;
         // die;
-        return $select;
-    }
+    return $select;
+}
 
 
   /**

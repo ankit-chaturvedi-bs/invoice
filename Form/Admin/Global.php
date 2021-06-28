@@ -7,8 +7,8 @@ class Invoice_Form_Admin_Global extends Engine_Form{
   {
 
     $this
-      ->setTitle('Global Settings')
-      ->setDescription('These settings affect all members in your community.');
+    ->setTitle('Global Settings')
+    ->setDescription('These settings affect all members in your community.');
 
     $this->addElement('Text', 'invoice_page', array(
       'label' => 'Entries Per Page',
@@ -47,7 +47,71 @@ class Invoice_Form_Admin_Global extends Engine_Form{
       'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.igst', 8),
     ));
 
-     
+
+
+    $this
+    ->setDescription('Companys Details');
+
+
+
+
+    $this->addElement('Text', 'invoice_pan_no', array(
+      'label' => 'Pan No',
+      'description' => 'Company pan no',
+      'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.pan.no', 'xxxxxx'),
+    ));
+
+
+    $this->addElement('Text', 'invoice_gst_no', array(
+      'label' => 'GST No',
+      'description' => 'Company GST no',
+      'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.gst.no', 'xxxxxx'),
+    ));
+
+
+    $this->addElement('Text', 'invoice_lut_no', array(
+      'label' => 'LUT No',
+      'description' => 'Company LUT no',
+      'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.lut.no', 'xxxxxx'),
+    ));
+
+    $this->addElement('Text', 'invoice_account_name', array(
+      'label' => 'Account Name',
+      'description' => 'Company Account Name',
+      'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.account_name', 'xxxxxx'),
+    ));
+
+
+    $this->addElement('Text', 'invoice_account_no', array(
+      'label' => 'Account No',
+      'description' => 'Company Account No',
+      'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.account.no', 'xxxxxx'),
+    ));
+
+    $this->addElement('Text', 'invoice_bank_name', array(
+      'label' => 'Bank Name',
+      'description' => 'Company Bank Name',
+      'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.bank.name', 'xxxxxx'),
+    ));
+
+    $this->addElement('Text', 'invoice_account_address', array(
+      'label' => 'Account Address',
+      'description' => 'Company Account Address',
+      'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.account.address', 'xxxxxx'),
+    ));
+
+
+    $this->addElement('Text', 'invoice_ifsc_code', array(
+      'label' => 'IFSC Code',
+      'description' => 'Company IFSC Code',
+      'value' => Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.ifsc.code', 'xxxxxx'),
+    ));
+
+
+
+
+
+
     // Add submit button
     $this->addElement('Button', 'submit', array(
       'label' => 'Save Changes',

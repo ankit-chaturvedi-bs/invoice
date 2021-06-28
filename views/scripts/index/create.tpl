@@ -35,6 +35,9 @@ $this->headScript()
 $this->headScript()
       ->appendFile($this->layout()->staticBaseUrl . 'application/modules/Invoice/externals/scripts/calculation.js');
 
+$this->headScript()
+      ->appendFile($this->layout()->staticBaseUrl . 'application/modules/Invoice/externals/scripts/products_field_edit.js');
+
 ?>
 
 <div class="global-form">
@@ -69,6 +72,19 @@ echo $this->form->render($this);
 		class:"product-items"
 		
 	});
+
+
+	function createDeleteButton(){
+		const prodName = 'btn_'+cnt;
+		let elem = document.createElement('button');
+		elem.setAttribute('class','delete');
+		elem.setAttribute('id',prodName);
+		elem.setAttribute('name',prodName);
+		elem.setAttribute('type','button');
+		elem.setAttribute('onclick','deleteProduct(this)');
+		elem.innerHTML = "X"
+		return elem;
+	}
 
 	function createProductInput(){
 		const prodName = 'p'+cnt;
@@ -125,8 +141,10 @@ echo $this->form->render($this);
 	*/
 	function addElements(){
 	let productItemElem = new Element('div',{
-		class:"product-item"
+		class:"product-item",
+		id:cnt,
 	});
+	createDeleteButton().inject(productItemElem,'top');
 	createAmountInput().inject(productItemElem,'top');
 	createPriceInput().inject(productItemElem,'top');
 	createQuantityInput().inject(productItemElem,'top');
@@ -173,6 +191,9 @@ echo $this->form->render($this);
 
 
 		document.getElementById('type').setAttribute('disabled',"disabled");
+
+
+		
 
 
 	</script>

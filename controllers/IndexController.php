@@ -65,7 +65,8 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     // get the products array
     $products = $form->getProducts($formValues);
 
-    
+    // print_r($products);
+    // die;
     if(!$form->isValidProducts($products))  return $form->addError('Products are not valid');
 
 
@@ -121,18 +122,9 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
       $values['total'] = $this->calcTotal($products,$values);
 
-
-
-      // var_dump($values);
-      // die;
-
       $invoice = $table->createRow();
       $invoice->setFromArray($values);
       $invoice->save();
-      // echo "<pre>";
-      // print_r($invoice->toArray());
-      // print_r($values);
-      // die;
 
       
       // products table insertion begin here
@@ -142,17 +134,14 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       
       $prodDb->beginTransaction();
 
-      // products name array
+      // arrays
       $names = $products['names'];
-      // products quantity array  
       $qtys = $products['quantitys'];
-      // products amounts array 
       $amounts = $products['amounts']; 
 
-      // total added product count;
+
       $cnt = (int)$values['products'];
-      // print_r($values);
-      // die;
+
 
       for($i = 1; $i<=$cnt;$i++){
         $productArray = array();
@@ -163,10 +152,6 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
         $productArray['invoice_number'] = $invoice_number;
         $productArray['product_id'] = null;
         $product = $productTable->createRow();
-
-        // echo "hello world";
-        // print_r($product->toArray());
-        // die;
         
         $product->setFromArray($productArray);
         $product->save();
@@ -199,8 +184,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       'limit' => $item_per_page
     );
 
-
-
+    $this->view->form = $form = new Invoice_Form_Admin_Filter();
 
     // Get paginator
     $this->view->paginator = $paginator = Engine_Api::_()->getItemTable('invoice')->getInvoicesPaginator($values);
@@ -267,7 +251,9 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     if(!$form->isValidProducts($products))  return $form->addError('Products are not valid');
 
 
-    
+    $this->view->cgst = $formValues['cgst'];
+    $this->view->sgst = $formValues['sgst'];
+    $this->view->igst = $formValues['igst'];
 
         // Process
 
@@ -378,7 +364,22 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
     $this->view->invoice = $invoiceValues;
     $this->view->products = $products;
+    $this->view->company = $this->getCompanyDetails();
 
+  }
+
+
+
+  private function getCompanyDetails(){
+    $keys = array('account.name','account.no','account.address','bank.name','gst.no','ifsc.code','lut.no','pan.no');
+
+    $details = array();
+
+    foreach($keys as $k){
+      $details[$k] = Engine_Api::_()->getApi('settings', 'core')->getSetting('invoice.'.$k, 'xxxxxx');
+    }
+
+    return $details;
   }
 
 
@@ -466,7 +467,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
   }
 
   /**
-   * @param products to insert | invoice number of produts 
+   * @param products to insert | invoice number of products 
    * 
    */
   private function updateProductDb($products,$invoice_number){
@@ -513,7 +514,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
   /**
    * @param invoice array
-   * @return reseted array base on Invoice_Form_Create Values
+   * @return reseted array based on Invoice_Form_Create Values
    */
 
   private function resetKeys($array){
@@ -534,16 +535,6 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
 
 
-
-  /*
-    * return unique invoice number,
-    * invoice financial start year,
-    * invoice financial end year,
-    * invoice financial month, 
-  */
-  public function invoiceDetails(){
-
-  }
 
 
 // output array;

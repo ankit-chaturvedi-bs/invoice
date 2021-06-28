@@ -15,6 +15,13 @@ class Invoice_AdminManageController extends Core_Controller_Action_Admin
 			foreach ($values as $key => $value) {
 				if ($key == 'delete_' . $value) {
 					$invoice = Engine_Api::_()->getItem('invoice', $value);
+
+					$streamTable = Engine_Api::_()->getDbtable('products', 'invoice');
+					$streamTable->delete(array(
+						'invoice_number = ?' => $invoice['invoice_number'],
+					));
+
+
 					$invoice->delete();
 				}
 			}
@@ -95,7 +102,7 @@ class Invoice_AdminManageController extends Core_Controller_Action_Admin
 
 		$arr = array();
 		$keys = array("invoice_number","category_id","type"
-		);
+	);
 
 		foreach($param as $key => $value){
 

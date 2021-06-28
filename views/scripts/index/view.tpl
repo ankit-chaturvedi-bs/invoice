@@ -1,10 +1,13 @@
 <?php
 
-	$invoice = $this->invoice;
-	$products = $this->products;
+$invoice = $this->invoice;
+$products = $this->products;
+	// comapny details
+$details = $this->company;
 
 
-	$cnt = 1;
+
+$cnt = 1;
 ?>
 
 <style>
@@ -12,10 +15,12 @@
 @import url(https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css);
 /*<link href="" rel="stylesheet">*/
 
-/*#global_wrapper{
-	background-color: #fcfcfc !important;
+#global_wrapper{
+	background-color: white !important;
 	border-top: 1px solid gray;
-}*/
+}
+
+
 </style>
 
 
@@ -28,7 +33,7 @@
 	</header>
 
 
-	<div class="content">
+	<div class="content" id="main_content">
 
 		<h3 class="text-lg text-center">Invoice</h1>
 
@@ -67,11 +72,11 @@
 
 						<?php foreach($products as $key => $value): ?>
 
-						<tr class="border-2 p-4">
-							<td class="border-2 p-1"><?=$key?></td>
-							<td class="border-2 p-1"><?=$value['product_name']?></td>
-							<td class="border-2 p-1"><?=($value['quantity']*$value['price'])?></td>
-						</tr>
+							<tr class="border-2 p-4">
+								<td class="border-2 p-1"><?=$key?></td>
+								<td class="border-2 p-1"><?=$value['product_name']?></td>
+								<td class="border-2 p-1"><?=($value['quantity']*$value['price'])?></td>
+							</tr>
 
 
 						<?php endforeach; ?>
@@ -86,26 +91,26 @@
 							</td>
 						</tr>
 						<?php if($invoice['currency']): ?>
-						<?php if($invoice['state']): ?>
-						<tr>
-							<td></td>
-							<td class="border-2 p-1">IGST</td>
-							<td class="border-2 p-1"><?=$invoice['igst'];?></td>
-						</tr>
-						
-						<?php else: ?>
-						<tr>
-							<td></td>
-							<td class="border-2 p-1">CGST</td>
-							<td class="border-2 p-1"><?=$invoice['cgst'];?></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td class="border-2 p-1">SGST</td>
-							<td class="border-2 p-1"><?=$invoice['sgst'];?></td>
-						</tr>
+							<?php if($invoice['state']): ?>
+								<tr>
+									<td></td>
+									<td class="border-2 p-1">IGST</td>
+									<td class="border-2 p-1"><?=$invoice['igst'];?></td>
+								</tr>
 
-						<?php endif; ?>
+							<?php else: ?>
+								<tr>
+									<td></td>
+									<td class="border-2 p-1">CGST</td>
+									<td class="border-2 p-1"><?=$invoice['cgst'];?></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td class="border-2 p-1">SGST</td>
+									<td class="border-2 p-1"><?=$invoice['sgst'];?></td>
+								</tr>
+
+							<?php endif; ?>
 
 						<?php endif; ?>
 
@@ -124,9 +129,50 @@
 
 
 
+			
+
+
+
+
+
+			<p>PAN No:<?=$details['pan.no']?></p>
+			<p>GST No:<?=$details['gst.no']?></p>
+			<p>LUT No:<?=$details['lut.no']?></p>
+
+
+			<h2>Bank Details:</h2>
+
+			<p>Account Name:<?=$details['account.name']?></p>
+			<p>Account No:<?=$details['account.no']?></p>
+			<p>Bank:<?=$details['bank.name']?></p>
+			<p>Account Address:<?=$details['account.address']?></p>
+			<p>IFSC Code:<?=$details['ifsc.code']?></p>
+
+
+
 		</div>
+
+		
 
 
 
 
 	</div>
+
+	<button onclick="printDiv()" > Print</button>
+
+
+	<script type="text/javascript">
+
+		function printDiv() {
+			var printContents = document.getElementById('main_content').innerHTML;
+			var originalContents = document.body.innerHTML;
+
+			document.body.innerHTML = printContents;
+
+			window.print();
+
+			document.body.innerHTML = originalContents;
+		}
+
+	</script>

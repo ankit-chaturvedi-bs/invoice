@@ -119,7 +119,16 @@ function changeSubtotal(priceArr,quantityArr){
 	}
 
 	$('sub_total').value = total;
+	const igst = +$('igst').value;
+	const cgst = +$('cgst').value;
+	const sgst = +$('sgst').value;
+	$('igst').value = (total*igst)/100;
+	$('cgst').value = (total*cgst)/100;
+	$('sgst').value = (total*sgst)/100;
+
 }
+
+
 
 
 

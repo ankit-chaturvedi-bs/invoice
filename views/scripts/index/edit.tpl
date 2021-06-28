@@ -37,6 +37,9 @@
 
 	$this->headScript()
 	->appendFile($this->layout()->staticBaseUrl . 'application/modules/Invoice/externals/scripts/fieldsvalidation.js');
+
+	$this->headScript()
+	->appendFile($this->layout()->staticBaseUrl . 'application/modules/Invoice/externals/scripts/products_field_edit.js');
 	?>
 
 
@@ -48,9 +51,9 @@
 
 	<script type="text/javascript">
 		let elem = $('products-wrapper');
-		const cgst = +'8';
-		const sgst = +'8';
-		const igst = +'8';
+		const cgst = +'<?=$this->cgst?>';
+		const sgst = +'<?=$this->sgst?>';
+		const igst = +'<?=$this->igst?>';
 
 		const maxCnt = 5;
 		let cnt = 1;
@@ -70,6 +73,22 @@
 	 let productElem = new Element('div',{
 	 	class:"product-items"		
 	 });
+
+	 	/**
+	 * @return An delete button
+	 */
+
+	 function createDeleteButton(){
+	 	const prodName = 'btn_'+cnt;
+	 	let elem = document.createElement('button');
+	 	elem.setAttribute('class','delete');
+	 	elem.setAttribute('id',prodName);
+	 	elem.setAttribute('name',prodName);
+	 	elem.setAttribute('type','button');
+	 	elem.setAttribute('onclick','deleteProduct(this)');
+	 	elem.innerHTML = "X"
+	 	return elem;
+	 }
 
 	/**
 	 * @return An input element for product name field
@@ -145,8 +164,10 @@
 	 */
 	 function addElements(){
 	 	let productItemElem = new Element('div',{
-	 		class:"product-item"
+	 		class:"product-item",
+	 		id:cnt,
 	 	});
+	 	createDeleteButton().inject(productItemElem,'top');
 	 	createAmountInput().inject(productItemElem,'top');
 	 	createPriceInput().inject(productItemElem,'top');
 	 	createQuantityInput().inject(productItemElem,'top');
@@ -227,6 +248,10 @@
 
 
 	</script>
+
+
+
+
 
 
 
