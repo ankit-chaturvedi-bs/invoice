@@ -6,11 +6,11 @@ $this->headScript()
 
 
   <style type="text/css">
-  #global_wrapper{
+/*  #global_wrapper{
     background-color: #fcfcfc !important;
     border-top: 1px solid gray;
 }
-
+*/
 table{
     /*border: 1px solid black;*/
     width: 100%;

@@ -8,9 +8,17 @@
     'title' => 'Invoice',
     'description' => 'Invoice Creator ',
     'author' => 'admin',
+    'dependencies' => array(
+      array(
+        'type' => 'module',
+        'name' => 'core',
+        'minVersion' => '4.0.0',
+      ),
+    ),
     'callback' => 
     array (
-      'class' => 'Engine_Package_Installer_Module',
+      'path' => 'application/modules/Invoice/settings/install.php',
+      'class' => 'Invoice_Installer',
     ),
     'actions' => 
     array (
@@ -27,6 +35,14 @@
     'files' => 
     array (
       0 => 'application/languages/en/invoice.csv',
+    ),
+  ),
+
+  // Hooks ---------------------------------------------------------------------
+  'hooks' => array(
+    array(
+      'event' => 'onUserDeleteBefore',
+      'resource' => 'Invoice_Plugin_Core',
     ),
   ),
 
@@ -65,4 +81,4 @@
 
     ),
   ),
-); ?>
+  ); ?>

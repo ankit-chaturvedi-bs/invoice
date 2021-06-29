@@ -23,18 +23,18 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
     $viewer = Engine_Api::_()->user()->getViewer();
 
-    $creatorsId = array(1,2,3,6);
+    // $creatorsId = array(1,2,3,6);
 
-    $canCreate = Engine_Api::_()->getDbtable('permissions', 'authorization')->getAllowed('invoice', $this->view->viewer()->level_id, 'create');
+    // $canCreate = Engine_Api::_()->getDbtable('permissions', 'authorization')->getAllowed('invoice', $this->view->viewer()->level_id, 'create');
 
-    if(!$canCreate){
+    // if(!$canCreate){
 
-    return $this->_helper->redirector->gotoRoute(array('action' => 'manage'), 'invoice_general', true);
+    //   return $this->_helper->redirector->gotoRoute(array('action' => 'manage'), 'invoice_general', true);
 
 
-    }
+    // }
 
-  
+
     
 
     if( !$this->getRequest()->isPost() ) {
@@ -184,10 +184,29 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       'limit' => $item_per_page
     );
 
-    $this->view->form = $form = new Invoice_Form_Admin_Filter();
+    $this->view->form = $form = new Invoice_Form_Search();
 
-    // Get paginator
+    $defaultValues = $form->getValues();
+    if( $form->isValid($this->_getAllParams()) ) {
+      $values = $form->getValues();
+    } else {
+      $values = $defaultValues;
+    }
+    $this->view->formValues = array_filter($values);
+
+    $this->view->assign($values);
+
+    // print_r($values);
+    // die;
+    // // Get paginator
     $this->view->paginator = $paginator = Engine_Api::_()->getItemTable('invoice')->getInvoicesPaginator($values);
+
+
+    // Render
+    $this->_helper->content
+            //->setNoRender()
+    ->setEnabled()
+    ;
 
 
 
@@ -266,7 +285,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       $finalValues = $this->getEditableValues($formValues);
       $finalValues['total'] = $this->calcTotal($products,$formValues);
 
-     
+
       // $this->debugErrors($finalValues);
       $invoice->setFromArray($finalValues);
       $invoice->save();
@@ -341,7 +360,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
 
   public function viewAction(){
-        if (!$this->_helper->requireUser()->isValid()) return;
+    if (!$this->_helper->requireUser()->isValid()) return;
 
 
     $viewer = Engine_Api::_()->user()->getViewer();
@@ -406,23 +425,23 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
       $state = $formValues['state'];
 
       if($state){
-           $igstTax = $this->calcTax($formValues['igst'],$total);
-           $cgstTax = $this->calcTax($formValues['cgst'],$total);
-            $tax = $igstTax+$cgstTax;
-      }else{
-        $sgstTax = $this->calcTax($formValues['sgst'],$total);
-        $tax = $sgstTax;
-      }
+       $igstTax = $this->calcTax($formValues['igst'],$total);
+       $cgstTax = $this->calcTax($formValues['cgst'],$total);
+       $tax = $igstTax+$cgstTax;
+     }else{
+      $sgstTax = $this->calcTax($formValues['sgst'],$total);
+      $tax = $sgstTax;
     }
-    $total += $tax + (int)$formValues['discount'];
+  }
+  $total += $tax + (int)$formValues['discount'];
 
 
     // echo $total;
     // die;
 
-    return $total;
+  return $total;
 
-  }
+}
 
 
   /**

@@ -103,6 +103,9 @@ public function getInvoiceNumber($category,$name,$curr = 0){
      */
   public function getInvoicesSelect($params = array())
   {
+
+
+    
     $viewer = Engine_Api::_()->user()->getViewer();
     $viewerId = $viewer->getIdentity();
 
@@ -115,8 +118,35 @@ public function getInvoiceNumber($category,$name,$curr = 0){
             ? $rName.'.'.$params['orderby'].' DESC': $rName.'invoice_id DESC');
 
 
-    $select = $table->select()
-    ->where("creator_id = ?",$viewerId);
+
+
+
+    $select = $table->select();
+
+    $whereClause = "creator_id = ".$viewerId;
+    if(!empty($params['search'])){
+        $whereClause .= " AND invoice_number LIKE '%".$params['search']."%'";
+    }
+
+    if(!empty($params['name'])){
+        $whereClause .= " AND creator_name = '".$params['name']."'";
+    }
+
+    if(!empty($params['date'])){
+
+        $whereClause .= " AND creation_date LIKE '%".$params['date']."%'";
+    }
+
+    if(!empty($params['status'])){
+
+        $whereClause .= " AND type = ".$params['status'];
+    }
+
+    $select->where($whereClause);
+
+    // print_r($param);
+    // echo $select;
+    // die;
     
     return $select;
     
@@ -148,7 +178,6 @@ public function getFilteredSelect($search){
      */
   public function getInvoicesPaginator($params = array(),$search = array())
   {
-
     $select;
 
     if(empty($search)){
@@ -190,6 +219,30 @@ public function getFilteredSelect($search){
       return $data;
   }
 
+
+
+
+  /**
+   * @param user id | user name
+   * @do update the creator_id for the user ,set it to superadmin
+   * will be called where user deletes his account
+   */
+
+  public function updateOwner($userId,$userName){
+    $whereClause = array(
+        '`creator_id` = ?' =>$userId,
+    );
+
+    $table = Engine_Api::_()->getItemTable('user');
+    $rName = $table->info('name');
+
+    $stmt = $table->select()->from($rName,array('username'))->where('user_id = 1')->query();
+    $data = $stmt->fetch();
+
+
+    $this->update(array("creator_id"=>1,"creator_name"=>$data['username']),$whereClause);
+
+  }
 
 
 
