@@ -19,26 +19,6 @@
  */
 class Invoice_Form_Create extends Engine_Form
 {
-    public $_error = array();
-
-    protected $_parent_type;
-
-    protected $_parent_id;
-
-    public function setParent_type($value)
-    {
-        $this->_parent_type = $value;
-    }
-
-    public function setParent_id($value)
-    {
-        $this->_parent_id = $value;
-    }
-
-
-
-
-
     public function init()
     {
         $this->setTitle('Create A New Invoice')
@@ -58,15 +38,6 @@ class Invoice_Form_Create extends Engine_Form
         ));
 
 
-        // $this->addElement('Text', 'invoice_number', array(
-        //     'label' => 'Invoice Number',
-        //     'allowEmpty' => false,
-        //     'required' => true,
-        //     'maxlength' => '63',
-        //     'value' => 'will get this from db',
-        //     'readonly'=> true,
-        //     'autofocus' => 'autofocus',
-        // ));
 
         $this->addElement('Text', 'customer_name', array(
             'label' => 'Name (Bill To)',
@@ -169,7 +140,7 @@ class Invoice_Form_Create extends Engine_Form
 
 
         $this->addElement('Text', 'discount', array(
-            'label' => 'Discount',
+            'label' => 'Discount(Enter the percentage and it will auto calculate the amount)',
             'allowEmpty' => false,
             'required' => true,
             'maxlength' => '63',
@@ -222,20 +193,6 @@ class Invoice_Form_Create extends Engine_Form
             'readonly'=> true,
         ));
 
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
         // Element: submit
         $this->addElement('Button', 'submit', array(
             'label' => 'Post Entry',
@@ -255,7 +212,6 @@ class Invoice_Form_Create extends Engine_Form
     }
 
     public function validMobile($mobile){
-        $isValid = true;
         $regex =  "/^(\+\d{1,3}[- ]?)?\d{10}$/";
 
        $isValid = preg_match($regex,$mobile);
@@ -273,13 +229,15 @@ class Invoice_Form_Create extends Engine_Form
     }
 
 
+
+    /**
+     * @param array of all form values
+     * @return array of products
+     */
+
+
     public function getProducts($param = array()){
         if(!isset($param)) return;
-
-
-        // print_r($param);
-        // die;
-        
         $names = array();
         $qtys =array();
         $amounts =array();
@@ -300,12 +258,7 @@ class Invoice_Form_Create extends Engine_Form
             $amounts[$i] = $param[$id];
         }
 
-        // print_r(array(
-        //     'names' => $names,
-        //     'quantitys' => $qtys,
-        //     'amounts' => $amounts,
-        // ));
-        // die;
+        
 
         return array(
             'names' => $names,
@@ -315,25 +268,24 @@ class Invoice_Form_Create extends Engine_Form
 
     }
 
+
+    /**
+     * @param products array
+     * @return whether products are valid or not
+     */
     public function isValidProducts($products){
-        // products name array
-        $names = $products['names'];
-        // products quantity array  
+        // arrays
+        $names = $products['names']; 
         $qtys = $products['quantitys'];
-        // products amounts array 
         $amounts = $products['amounts']; 
 
-        // validate each names field
+        // validate fields by checking empty fields
         foreach($names as $value){
             if(empty($value)) return false;
         }
-
-        //validate each quantity field
         foreach($qtys as $value){
             if(empty($value) || $value < 0) return false;
         }
-
-        // validate every amounts filed
         foreach($amounts as $value){
             if(empty($value) || $value < 0) return false;
         }
@@ -341,49 +293,7 @@ class Invoice_Form_Create extends Engine_Form
         return true;
     }
 
-    public function postEntry()
-    {
-        $values = $this->getValues();
-
-        $user = Engine_Api::_()->user()->getViewer();
-        $title = $values['title'];
-        $body = $values['body'];
-        $category_id = $values['category_id'];
-        $tags = preg_split('/[,]+/', $values['tags']);
-
-        $db = Engine_Db_Table::getDefaultAdapter();
-        $db->beginTransaction();
-        try {
-            // Transaction
-            $table = Engine_Api::_()->getDbtable('blogs', 'blog');
-
-            // insert the blog entry into the database
-            $row = $table->createRow();
-            $row->owner_id   =  $user->getIdentity();
-            $row->owner_type = $user->getType();
-            $row->category_id = $category_id;
-            $row->creation_date = date('Y-m-d H:i:s');
-            $row->modified_date   = date('Y-m-d H:i:s');
-            $row->title   = $title;
-            $row->body   = $body;
-            //$row->category_id = $category_id;
-            $row->save();
-
-            $blogId = $row->blog_id;
-
-            if ($tags) {
-                $this->handleTags($blogId, $tags);
-            }
-
-            $attachment = Engine_Api::_()->getItem($row->getType(), $blogId);
-            $action = Engine_Api::_()->getDbtable('actions', 'activity')->addActivity($user, $row, 'blog_new');
-            Engine_Api::_()->getDbtable('actions', 'activity')->attachActivity($action, $attachment);
-            $db->commit();
-        } catch (Exception $e) {
-            $db->rollBack();
-            throw $e;
-        }
-    }
+    
 
     
 

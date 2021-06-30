@@ -6,10 +6,13 @@ function discountChange(element){
 	const value = +(element.value);
 	let finalValue = 0;
 
-	if(value > 0 && value){
+	if(value > 0 && value <= 100 && value){
 		finalValue = value;
 	}
 
+	const sub = +$('sub_total').value;
+	// console.log(sub);
+	finalValue = (sub*finalValue)/100;
 	element.value = finalValue;
 
 	calcTotalAmount();

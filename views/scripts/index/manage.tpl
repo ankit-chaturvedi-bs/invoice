@@ -127,7 +127,7 @@ if ($paginator->getTotalItemCount() > 0) :
                                     ),'view'); ?>
                                 </span>
                                 <td><?=$item['total'];?></td>
-                                <td><?php echo ($item['currency'])?"Dollar":"Rupees"?>
+                                <td><?php echo (!$item['currency'])?"Dollar":"Rupees"?>
                             </tr>
                         <?php endforeach; ?>
 

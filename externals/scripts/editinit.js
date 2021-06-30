@@ -1,31 +1,5 @@
 
 
-// /**
-//  * @param id 
-//  * @return function executed successfully
-//  *
-//  */ 
-
-// function addProductRow(id){
-// 	if(id>5)return false;
-// 	let proTableDiv = document.querySelector('.product-items');
-// 	let stmt = `
-// 	<div class="product-item" style="margin:5px 0px">
-// 	<input type="text" id="p${id}" name="product" value="" style="width:240px" " />
-
-// 	<input type="number" id="q${id}" name="quantity" value="" style="width:80px;height:40px" onblur="quantityChange(this)"/>
-
-// 	<input type="number" id="pr${id}" name="price" value="" 
-// 	style="width:100px;height:40px" onblur="priceChange(this)" />
-
-// 	<input type="number" id="a${id}" name="amount" value="" style="width:100px;height:40px" readonly/>
-
-// 	</div>`;
-// 	proTableDiv.innerHTML += stmt;
-// 	return true;
-// }
-
-
 
 function populateInput(value,id){
 

@@ -55,6 +55,8 @@
 		const sgst = +'<?=$this->sgst?>';
 		const igst = +'<?=$this->igst?>';
 
+		console.log(`cgst is ${cgst} sgst is ${sgst} igst is ${igst}`);
+
 		const maxCnt = 5;
 		let cnt = 1;
 		let  priceArray = [];

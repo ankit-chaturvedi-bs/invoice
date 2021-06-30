@@ -102,7 +102,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
 
       // get the invoice number
-      $invoice_number = Engine_Api::_()->getDbtable('invoices', 'invoice')->getInvoiceNumber($values['category_id'],$category_name);
+      $invoice_number = Engine_Api::_()->getDbtable('invoices', 'invoice')->getInvoiceNumber($values['category_id'],$category_name,$values['currency']);
 
       
       $values = array_merge($values,array(
@@ -237,14 +237,16 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
     $products = Engine_Api::_()->getDbtable('products','invoice')->getProducts($invoiceValues['invoice_number']);
 
-    $this->view->form = $form = new Invoice_Form_Create();
+    $this->view->form = $form = new Invoice_Form_Edit();
 
     $invoiceValues = $this->resetKeys($invoiceValues);
     $form->populate($invoiceValues);
 
     $this->view->products = $products;
 
-
+    $this->view->cgst = $invoiceValues['cgst'];
+    $this->view->sgst = $invoiceValues['sgst'];
+    $this->view->igst = $invoiceValues['igst'];
 
 
     // $this->debugErrors($this->getRequest()->getPost());
@@ -270,9 +272,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
     if(!$form->isValidProducts($products))  return $form->addError('Products are not valid');
 
 
-    $this->view->cgst = $formValues['cgst'];
-    $this->view->sgst = $formValues['sgst'];
-    $this->view->igst = $formValues['igst'];
+    
 
         // Process
 

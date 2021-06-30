@@ -6,17 +6,19 @@ class Invoice_Model_DbTable_Invoices extends Core_Model_Item_DbTable_Abstract
   protected $_rowClass = 'Invoice_Model_Invoice';
 
   // get the tow initials from category name
-  private function constructName($name){
+  private function constructName($name,$curr){
     $arr = explode(" ",$name);
-    return substr($arr[0],0,1).substr($arr[1],0,1);
+    $extra = "";
+    if(!$curr) $extra = "P";
+    return substr($arr[0],0,1).substr($arr[1],0,1).$extra;
 
 }
 
-private function getNumber($param,$name,$currYear,$currMonth,$resetMonth){
+private function getNumber($param,$name,$currYear,$currMonth,$resetMonth,$curr){
     // invoice starting number
     $inNo = (int)$param[0]; 
     // invoice category name
-    $cat = $this->constructName($name);
+    $cat = $this->constructName($name,$curr);
     // invoice start and end year format(19-20);
     $stEnYear = $param[2]; 
     $years = explode("-",$stEnYear);
@@ -65,7 +67,8 @@ public function getInvoiceNumber($category,$name,$curr = 0){
 
     $stmt = $this->select()->
     from($this,array('Max(invoice_id) as id'))
-    ->where('category_id = ?',$category)
+    ->where('category_id = '.$category.' AND currency = '.$curr)
+    // ->where('category_id = ?',$category)
     ->query();
 
     $id = $stmt->fetch();
@@ -76,7 +79,7 @@ public function getInvoiceNumber($category,$name,$curr = 0){
     if(empty($id['id'])){
     // covert the current year by taking last two chars
         $currYear = (int)(substr($currYear,2));
-        $cat = $this->constructName($name);
+        $cat = $this->constructName($name,$curr);
 
         return "1"."/".$cat."/".$currYear."-".++$currYear;
     }
@@ -91,7 +94,7 @@ public function getInvoiceNumber($category,$name,$curr = 0){
     // die;
     $values = explode("/",$value['invoice_number']);
     
-    return $this->getNumber($values,$name,$currYear,$currMonth,$resetMonth);
+    return $this->getNumber($values,$name,$currYear,$currMonth,$resetMonth,$curr);
     
 }
 

@@ -3,7 +3,7 @@ INSERT IGNORE INTO `engine4_core_modules` (`name`, `title`, `description`, `vers
 
 DROP TABLE IF EXISTS `engine4_invoice_invoices`;
 CREATE TABLE `engine4_invoice_invoices` (
-  `invoice_id` int UNSIGNED NOT NULL,
+  `invoice_id` int UNSIGNED NOT NULL auto_increment,
   `creator_id` varchar(128) NOT NULL,
   `creator_name` longtext NOT NULL,
   `customer_name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,

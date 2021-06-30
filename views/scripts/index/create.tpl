@@ -152,6 +152,8 @@ echo $this->form->render($this);
 	return productItemElem
 	}
 
+
+	// will get called on click of add product button
 	function addProduct(){
 		if(cnt > maxCnt ){
 			alert("Products Can't Be More Then 5");
@@ -161,6 +163,7 @@ echo $this->form->render($this);
 		++cnt;
 	}
 
+	// add one field by default
 	addProduct();
 	//add the product div to @elem
 	productElem.inject(elem,'after');
@@ -202,23 +205,6 @@ echo $this->form->render($this);
 	// change total based on values
 
 
-<!-- 	<script type="text/javascript">
-	const totalArray = [];
-	for(let i=1; i<= maxCnt ; ++i) totalArray[i] = 0;
-	function changeTotal(element){
-		const elemId = +(element.id).substring(1);
-		const elemValue = +(element.value);
-		if(elemValue && elemValue >= 0) totalArray[elemId] = elemValue; 
-		
-		if(elemValue < 0){
-			element.value = 0;
-			alert("Total Can't be Nagative")
-		}
-		
-	}	
-
-
-	</script>  -->
 
 
 
