@@ -25,14 +25,14 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
     // $creatorsId = array(1,2,3,6);
 
-    // $canCreate = Engine_Api::_()->getDbtable('permissions', 'authorization')->getAllowed('invoice', $this->view->viewer()->level_id, 'create');
+    $canCreate = Engine_Api::_()->getDbtable('permissions', 'authorization')->getAllowed('invoice', $this->view->viewer()->level_id, 'create');
 
-    // if(!$canCreate){
+    if(!$canCreate){
 
-    //   return $this->_helper->redirector->gotoRoute(array('action' => 'manage'), 'invoice_general', true);
+      return $this->_helper->redirector->gotoRoute(array('action' => 'manage'), 'invoice_general', true);
 
 
-    // }
+    }
 
 
     
@@ -56,7 +56,7 @@ class Invoice_IndexController extends Core_Controller_Action_Standard
 
     if(!$form->validEmail($formValues['email'])) return $form->addError('Email is not valid');
 
-    // if(!$form->validMobile($formValues['contact_number'])) return;
+    if(!$form->validMobile($formValues['contact_number'])) return $form->addError('Mobile is not valid');
 
     // if(!$form->validDate($formValues['date'])) return $form->addError('Date is not valid');
 

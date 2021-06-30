@@ -256,9 +256,9 @@ class Invoice_Form_Create extends Engine_Form
 
     public function validMobile($mobile){
         $isValid = true;
-        $regex = "/^([+]\d{2})?\d{10}$/";
+        $regex =  "/^(\+\d{1,3}[- ]?)?\d{10}$/";
 
-        if(!preg_match(regex,$mobile)) $isValid = false;
+       $isValid = preg_match($regex,$mobile);
 
         return $isValid;
     }
